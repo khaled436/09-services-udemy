@@ -1,5 +1,5 @@
 import {Injectable, signal} from '@angular/core';
-import {Task} from "./task.model";
+import {Task, TaskStatus} from "./task.model";
 
 @Injectable({
   providedIn: 'root',
@@ -9,14 +9,20 @@ export class TasksService {
 
   allTaks = this.tasks.asReadonly();
 
-  addTask(task: {title: string, description: string}) {
+  addTask(task: { title: string, description: string }) {
 
-    const newTask : Task = {
+    const newTask: Task = {
       ...task,
       id: Math.random().toString(),
       status: 'OPEN',
     }
 
     this.tasks.update((oldTaks) => [...this.tasks(), newTask])
+  }
+
+  updateTaskStatus(taskId: string, newStatus: TaskStatus) {
+    this.tasks.update((odlTasks) =>
+      odlTasks.map((task) =>
+        task.id === taskId ? {...task, status: newStatus} : task));
   }
 }
